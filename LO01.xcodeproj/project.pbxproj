@@ -17,6 +17,7 @@
 		84DBB38A25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; };
 		84DBB38B25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84DBB39025F0BAB90036CA56 /* Shader.cpp */; };
+		84E8BCEA25F6101000C72624 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84E8BCE925F6101000C72624 /* test.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,7 @@
 		84DBB39625F24FEB0036CA56 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		84DBB39A25F3A0FB0036CA56 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		84DBB39B25F3AE590036CA56 /* awesomeface.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = awesomeface.jpg; sourceTree = "<group>"; };
+		84E8BCE925F6101000C72624 /* test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				84DBB39025F0BAB90036CA56 /* Shader.cpp */,
 				84DBB39425F0C1180036CA56 /* fragmentSource.txt */,
 				84DBB39525F0C1260036CA56 /* vertexSource.txt */,
+				84E8BCE925F6101000C72624 /* test.cpp */,
 			);
 			path = LO01;
 			sourceTree = "<group>";
@@ -182,6 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8483B8D325E4C135002B13DC /* main.cpp in Sources */,
+				84E8BCEA25F6101000C72624 /* test.cpp in Sources */,
 				84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */,
 				8483B8DC25E4C313002B13DC /* glad.c in Sources */,
 			);
@@ -245,6 +249,7 @@
 					/usr/local/Cellar/glew/2.2.0_1/include,
 					/Users/manmantou/Documents/Mylib/glad/include,
 					/usr/local/Cellar/glfw/3.3.2/include,
+					/Users/manmantou/Documents/Mylib/glm,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
@@ -307,6 +312,7 @@
 					/usr/local/Cellar/glew/2.2.0_1/include,
 					/Users/manmantou/Documents/Mylib/glad/include,
 					/usr/local/Cellar/glfw/3.3.2/include,
+					/Users/manmantou/Documents/Mylib/glm,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
