@@ -18,6 +18,7 @@
 		84DBB38B25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84DBB39025F0BAB90036CA56 /* Shader.cpp */; };
 		84E8BCEA25F6101000C72624 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84E8BCE925F6101000C72624 /* test.cpp */; };
+		84E8BCED25F755E900C72624 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84E8BCEB25F755E900C72624 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -61,6 +62,8 @@
 		84DBB39A25F3A0FB0036CA56 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		84DBB39B25F3AE590036CA56 /* awesomeface.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = awesomeface.jpg; sourceTree = "<group>"; };
 		84E8BCE925F6101000C72624 /* test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
+		84E8BCEB25F755E900C72624 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		84E8BCEE25F7560C00C72624 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,16 +103,18 @@
 		8483B8D125E4C135002B13DC /* LO01 */ = {
 			isa = PBXGroup;
 			children = (
-				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
-				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
 				84DBB39625F24FEB0036CA56 /* stb_image.h */,
 				8483B8DB25E4C313002B13DC /* glad.c */,
-				8483B8D225E4C135002B13DC /* main.cpp */,
+				84E8BCEE25F7560C00C72624 /* Camera.h */,
+				84E8BCEB25F755E900C72624 /* Camera.cpp */,
 				84DBB39325F0BADB0036CA56 /* Shader.h */,
 				84DBB39025F0BAB90036CA56 /* Shader.cpp */,
+				8483B8D225E4C135002B13DC /* main.cpp */,
+				84E8BCE925F6101000C72624 /* test.cpp */,
 				84DBB39425F0C1180036CA56 /* fragmentSource.txt */,
 				84DBB39525F0C1260036CA56 /* vertexSource.txt */,
-				84E8BCE925F6101000C72624 /* test.cpp */,
+				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
+				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
 			);
 			path = LO01;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 			files = (
 				8483B8D325E4C135002B13DC /* main.cpp in Sources */,
 				84E8BCEA25F6101000C72624 /* test.cpp in Sources */,
+				84E8BCED25F755E900C72624 /* Camera.cpp in Sources */,
 				84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */,
 				8483B8DC25E4C313002B13DC /* glad.c in Sources */,
 			);

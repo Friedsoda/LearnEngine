@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "Camera.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -20,6 +21,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xPos, double yPos);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -87,7 +89,12 @@ glm::vec3 cubePositions[] = {
   glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
- 
+float lastX;
+float lastY;
+bool firstMouse = true;
+
+Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(15.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
+
 int main()
 {
     // glfw: initialize and configure
@@ -106,6 +113,8 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
     
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -134,17 +143,17 @@ int main()
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     
-    // position attribute
+    // Position attribute
     glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(6);
-//    // color attribute
+//    // Color attribute
 //    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 //    glEnableVertexAttribArray(7);
-    // texture attribute
+    // Texture attribute
     glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(8);
     
-    // load texture
+    // Load texture
     stbi_set_flip_vertically_on_load(true);
     unsigned int texBufferA;
     glGenTextures(1, &texBufferA);
@@ -181,20 +190,16 @@ int main()
     }
     stbi_image_free(data2);
     
-    // calculate transform matrix
-//    glm::mat4 trans(1.0f);
-//    trans = glm::translate(trans, glm::vec3(-1.0f, 0, 0));
-//    trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0, 0, 1.0f));
+    // Calculate transform matrix
     glm::mat4 modelMat(1.0f);
     modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
     glm::mat4 viewMat(1.0f);
-    viewMat = glm::translate(viewMat, glm::vec3(0, 0, -3.0f));
     glm::mat4 projMat(1.0f);
     projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     
     myShader->use();
     
-    // render loop
+    // Render loop
     while(!glfwWindowShouldClose(window))
     {
         // input
@@ -212,6 +217,7 @@ int main()
         glBindVertexArray(VAO);
         //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         
+        viewMat = camera.GetViewMatrix();
         myShader->use();
 
         // draw call
@@ -232,6 +238,7 @@ int main()
         
         glfwSwapBuffers(window);
         glfwPollEvents();
+        camera.UpdateCameraPos();
     }
     
     // optional: de-allocate all resources once they've outlived their purpose:
@@ -243,11 +250,54 @@ int main()
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// Process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow *window)
 {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, true);
+    }
+    
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        camera.speedZ = 1.0f;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        camera.speedZ = -1.0f;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        camera.speedX = -1.0f;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        camera.speedX = 1.0f;
+    }
+    else 
+    {
+        camera.speedX = 0;
+        camera.speedZ = 0;
+    }
+}
+
+// Set mouse callback
+void mouse_callback(GLFWwindow* window, double xPos, double yPos)
+{
+    if (firstMouse == true)
+    {
+        lastX = xPos;
+        lastY = yPos;
+        firstMouse = false;
+    }
+    float xOffset, yOffset;
+    xOffset = xPos - lastX;
+    yOffset = yPos - lastY;
+    
+    lastX = xPos;
+    lastY = yPos;
+    
+    camera.ProcessMouseMovement(xOffset, yOffset);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
