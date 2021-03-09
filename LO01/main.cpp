@@ -7,26 +7,22 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Shader.h"
-#include "Camera.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Shader.h"
+#include "Camera.h"
 
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-void mouse_callback(GLFWwindow* window, double xPos, double yPos);
-
-// settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+// MARK: Model Data
 float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -71,11 +67,6 @@ float vertices[] = {
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
-unsigned int indices[] = {
-    0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
-};
-
 glm::vec3 cubePositions[] = {
   glm::vec3( 0.0f,  0.0f,  0.0f),
   glm::vec3( 2.0f,  5.0f, -15.0f),
@@ -89,168 +80,16 @@ glm::vec3 cubePositions[] = {
   glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+
+// MARK: Camera Declare
+Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(15.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
+
+
+// MARK: Input Declare
 float lastX;
 float lastY;
 bool firstMouse = true;
 
-Camera camera(glm::vec3(0, 0, 3.0f), glm::radians(15.0f), glm::radians(180.0f), glm::vec3(0, 1.0f, 0));
-
-int main()
-{
-    // glfw: initialize and configure
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    
-    // glfw window creation
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-    
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//    glEnable(GL_CULL_FACE);
-//    glCullFace(GL_BACK);
-    glEnable(GL_DEPTH_TEST);
-    
-    Shader* myShader = new Shader("vertexSource.txt", "fragmentSource.txt");
-    
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
-//    unsigned int EBO;
-//    glGenBuffers(1, &EBO);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    
-    // Position attribute
-    glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(6);
-//    // Color attribute
-//    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-//    glEnableVertexAttribArray(7);
-    // Texture attribute
-    glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(8);
-    
-    // Load texture
-    stbi_set_flip_vertically_on_load(true);
-    unsigned int texBufferA;
-    glGenTextures(1, &texBufferA);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texBufferA);
-    
-    int width, height, nrChannel;
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannel, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Load image failed." << std::endl;
-    }
-    stbi_image_free(data);
-    
-    unsigned int texBufferB;
-    glGenTextures(2, &texBufferB);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, texBufferB);
-    
-    unsigned char *data2 = stbi_load("awesomeface.jpg", &width, &height, &nrChannel, 0);
-    if (data2)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Load image failed." << std::endl;
-    }
-    stbi_image_free(data2);
-    
-    // Calculate transform matrix
-    glm::mat4 modelMat(1.0f);
-    modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
-    glm::mat4 viewMat(1.0f);
-    glm::mat4 projMat(1.0f);
-    projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    
-    myShader->use();
-    
-    // Render loop
-    while(!glfwWindowShouldClose(window))
-    {
-        // input
-        processInput(window);
-        
-        // render
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        // bind Texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texBufferA);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, texBufferB);
-        glBindVertexArray(VAO);
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        
-        viewMat = camera.GetViewMatrix();
-        myShader->use();
-
-        // draw call
-        for (int i = 0; i < 10; i++)
-        {
-            glm::mat4 modelMat2(1.0f);
-            modelMat2 = glm::translate(modelMat2, cubePositions[i]);
-            
-            glUniform1i(glGetUniformLocation(myShader->ID, "ourTexture"), 0);
-            glUniform1i(glGetUniformLocation(myShader->ID, "ourFace"), 3);
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "viewMat"), 1, GL_FALSE, glm::value_ptr(viewMat));
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "projMat"), 1, GL_FALSE, glm::value_ptr(projMat));
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "modelMat"), 1, GL_FALSE, glm::value_ptr(modelMat2));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-        camera.UpdateCameraPos();
-    }
-    
-    // optional: de-allocate all resources once they've outlived their purpose:
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    glfwTerminate();
-    return 0;
-}
-
-// Process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -274,14 +113,13 @@ void processInput(GLFWwindow *window)
     {
         camera.speedX = 1.0f;
     }
-    else 
+    else
     {
         camera.speedX = 0;
         camera.speedZ = 0;
     }
 }
 
-// Set mouse callback
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
 {
     if (firstMouse == true)
@@ -300,8 +138,148 @@ void mouse_callback(GLFWwindow* window, double xPos, double yPos)
     camera.ProcessMouseMovement(xOffset, yOffset);
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+
+// MARK: Load Image
+unsigned int LoadImageToGPU(const char* fileName, GLint internalFormat, GLenum format, int textureSlot)
 {
-    glViewport(0, 0, width, height);
+    unsigned int texBuffer;
+    glGenTextures(1, &texBuffer);
+    glActiveTexture(GL_TEXTURE0 + textureSlot);
+    glBindTexture(GL_TEXTURE_2D, texBuffer);
+    
+    int width, height, nrChannel;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load(fileName, &width, &height, &nrChannel, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Load image failed." << std::endl;
+    }
+    stbi_image_free(data);
+    return texBuffer;
+}
+
+
+int main()
+{
+    // MARK: Open window
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+    
+    glEnable(GL_DEPTH_TEST);
+    
+    
+    // MARK: Init Shader
+    Shader* myShader = new Shader("vertexSource.vert", "fragmentSource.frag");
+    
+    
+    // MARK: Init and Load Models to VAO, VBO
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(6);
+//    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+//    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(8);
+    
+    
+    // MARK: Init and Load Textures
+    unsigned int texBufferA;
+    texBufferA = LoadImageToGPU("container.jpg", GL_RGB, GL_RGB, 0);
+    unsigned int texBufferB;
+    texBufferB = LoadImageToGPU("awesomeface.jpg", GL_RGBA, GL_RGBA, 3);
+
+    
+    // MARK: Prepare MVP Matrices
+    glm::mat4 modelMat(1.0f);
+    glm::mat4 viewMat(1.0f);
+    glm::mat4 projMat(1.0f);
+    projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+    
+    // MARK: Render loop
+    while(!glfwWindowShouldClose(window))
+    {
+        // Input
+        processInput(window);
+        
+        // Clear screen
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        viewMat = camera.GetViewMatrix();
+
+        for (int i = 0; i < 10; i++)
+        {
+            // Set model matrix
+            modelMat = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+            
+            // Set view and projection matrices if you want.
+            //
+            
+            // Set material -> shader program
+            myShader->use();
+            // Set material -> textures
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texBufferA);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, texBufferB);
+            // Set material -> uniform
+            glUniform1i(glGetUniformLocation(myShader->ID, "ourTexture"), 0);
+            glUniform1i(glGetUniformLocation(myShader->ID, "ourFace"), 3);
+            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "modelMat"), 1, GL_FALSE, glm::value_ptr(modelMat));
+            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "viewMat"), 1, GL_FALSE, glm::value_ptr(viewMat));
+            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "projMat"), 1, GL_FALSE, glm::value_ptr(projMat));
+            
+            // Set model
+            glBindVertexArray(VAO);
+            
+            // Draw call
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+         
+        // Clean up, prepare for next render loop
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+        camera.UpdateCameraPos();
+    }
+    
+    // Optional: de-allocate all resources once they've outlived their purpose:
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    
+    // Exit program
+    glfwTerminate();
+    return 0;
 }

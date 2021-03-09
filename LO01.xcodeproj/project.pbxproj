@@ -17,7 +17,6 @@
 		84DBB38A25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; };
 		84DBB38B25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84DBB39025F0BAB90036CA56 /* Shader.cpp */; };
-		84E8BCEA25F6101000C72624 /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84E8BCE925F6101000C72624 /* test.cpp */; };
 		84E8BCED25F755E900C72624 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84E8BCEB25F755E900C72624 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
@@ -56,14 +55,14 @@
 		84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
 		84DBB39025F0BAB90036CA56 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		84DBB39325F0BADB0036CA56 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
-		84DBB39425F0C1180036CA56 /* fragmentSource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = fragmentSource.txt; sourceTree = "<group>"; };
-		84DBB39525F0C1260036CA56 /* vertexSource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = vertexSource.txt; sourceTree = "<group>"; };
+		84DBB39425F0C1180036CA56 /* fragmentSource.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = fragmentSource.frag; sourceTree = "<group>"; };
+		84DBB39525F0C1260036CA56 /* vertexSource.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = vertexSource.vert; sourceTree = "<group>"; };
 		84DBB39625F24FEB0036CA56 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		84DBB39A25F3A0FB0036CA56 /* container.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpg; sourceTree = "<group>"; };
 		84DBB39B25F3AE590036CA56 /* awesomeface.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = awesomeface.jpg; sourceTree = "<group>"; };
-		84E8BCE925F6101000C72624 /* test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
 		84E8BCEB25F755E900C72624 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		84E8BCEE25F7560C00C72624 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		84E8BCEF25F7E64B00C72624 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,9 +109,8 @@
 				84DBB39325F0BADB0036CA56 /* Shader.h */,
 				84DBB39025F0BAB90036CA56 /* Shader.cpp */,
 				8483B8D225E4C135002B13DC /* main.cpp */,
-				84E8BCE925F6101000C72624 /* test.cpp */,
-				84DBB39425F0C1180036CA56 /* fragmentSource.txt */,
-				84DBB39525F0C1260036CA56 /* vertexSource.txt */,
+				84DBB39425F0C1180036CA56 /* fragmentSource.frag */,
+				84DBB39525F0C1260036CA56 /* vertexSource.vert */,
 				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
 				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
 			);
@@ -122,6 +120,7 @@
 		8483B8E225E4CAAF002B13DC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84E8BCEF25F7E64B00C72624 /* libc++.tbd */,
 				84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */,
 				8483B8EC25E4CB21002B13DC /* CoreVideo.framework */,
 				8483B8EA25E4CB19002B13DC /* IOKit.framework */,
@@ -190,7 +189,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8483B8D325E4C135002B13DC /* main.cpp in Sources */,
-				84E8BCEA25F6101000C72624 /* test.cpp in Sources */,
 				84E8BCED25F755E900C72624 /* Camera.cpp in Sources */,
 				84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */,
 				8483B8DC25E4C313002B13DC /* glad.c in Sources */,
