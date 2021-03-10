@@ -27,10 +27,11 @@ public:
     float Pitch;
     float Yaw;
     // camera options
-    float WKeySensitivity = 0.1;
+    float KeySensitivity = 0.1;
     float MouseSensitivity = 0.001;
     float speedZ = 0;
     float speedX = 0;
+    float speedY = 0;
     
     glm::mat4 GetViewMatrix();
     void ProcessMouseMovement(float xOffset, float yOffset);
