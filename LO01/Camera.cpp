@@ -53,6 +53,5 @@ void Camera::UpdateCameraVectors()
 
 void Camera::UpdateCameraPos()
 {
-    Position += glm::vec3(speedX * KeySensitivity, speedY * KeySensitivity, 0);
-    Position += Forward * speedZ * KeySensitivity;
+    Position += (Forward * speedZ + Right * speedX + Up * speedY) * KeySensitivity;
 }

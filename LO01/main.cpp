@@ -9,6 +9,9 @@
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -19,8 +22,12 @@
 
 #include <iostream>
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+#pragma comment(lib, "legacy_stdio_definitions")
+#endif
+
+const unsigned int SCR_WIDTH = 1200;
+const unsigned int SCR_HEIGHT = 800;
 
 // MARK: Model Data
 float vertices[] = {
@@ -115,11 +122,11 @@ void processInput(GLFWwindow *window)
     }
     else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        camera.speedY = 1.0f;
+        camera.speedY = -1.0f;
     }
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-        camera.speedY = -1.0f;
+        camera.speedY = 1.0f;
     }
     else
     {
@@ -189,7 +196,7 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
     
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -236,11 +243,47 @@ int main()
     glm::mat4 viewMat(1.0f);
     glm::mat4 projMat(1.0f);
     projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    
+    // MARK: Setup lighting
+    ImVec4 lightColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    ImVec4 lightPos = ImVec4(10.0f, 10.0f, 5.0f, 1.00f);
+    float specularStrength = 1.0f;
+    float ambientStrength = 0.5f;
+    
+    // MARK: Setup ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 150");
 
     
     // MARK: Render loop
     while(!glfwWindowShouldClose(window))
     {
+        // Start the ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        
+//        int counter = 0;
+        ImGui::Begin("My engine!");
+        ImGui::InputFloat3("light position", (float*)&lightPos);
+        ImGui::ColorEdit3("light color", (float*)&lightColor);
+        ImGui::SliderFloat("ambient", &ambientStrength, 0.1f, 2.0f);
+        ImGui::SliderFloat("specular", &specularStrength, 1.0f, 10.0f);
+
+
+//        if (ImGui::Button("Apply"))
+//            counter++;
+//        ImGui::SameLine();
+//        ImGui::Text("counter = %d", counter);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+
+        
         // Input
         processInput(window);
         
@@ -250,6 +293,7 @@ int main()
         
         viewMat = camera.GetViewMatrix();
 
+        ImGui::Render();
         for (int i = 0; i < 10; i++)
         {
             // Set model matrix
@@ -272,9 +316,10 @@ int main()
             glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "viewMat"), 1, GL_FALSE, glm::value_ptr(viewMat));
             glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "projMat"), 1, GL_FALSE, glm::value_ptr(projMat));
             glUniform3f(glGetUniformLocation(myShader->ID, "objColor"), 1.0f, 0.5f, 0.31f);
-            glUniform3f(glGetUniformLocation(myShader->ID, "ambient"), 0.2f, 0.1f, 0.0f);
-            glUniform3f(glGetUniformLocation(myShader->ID, "lightPos"), 10.0f, 10.0f, 5.0f);
-            glUniform3f(glGetUniformLocation(myShader->ID, "lightColor"), 1.0f, 1.0f, 1.0f);
+            glUniform1f(glGetUniformLocation(myShader->ID, "specularStrength"), specularStrength);
+            glUniform1f(glGetUniformLocation(myShader->ID, "ambientStrength"), ambientStrength);
+            glUniform3f(glGetUniformLocation(myShader->ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+            glUniform3f(glGetUniformLocation(myShader->ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z);
             glUniform3f(glGetUniformLocation(myShader->ID, "cameraPos"), camera.Position.x, camera.Position.y, camera.Position.z);
             
             // Set model
@@ -283,7 +328,8 @@ int main()
             // Draw call
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-         
+        
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // Clean up, prepare for next render loop
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -295,6 +341,9 @@ int main()
     glDeleteBuffers(1, &VBO);
     
     // Exit program
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
