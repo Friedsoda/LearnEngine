@@ -74,6 +74,8 @@
 		8483B8E825E4CB11002B13DC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8483B8EA25E4CB19002B13DC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		8483B8EC25E4CB21002B13DC /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		84AC31ED2606583B00498BC5 /* lightCubeVert.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightCubeVert.vert; sourceTree = "<group>"; };
+		84AC31EE2606585E00498BC5 /* lightCubeFrag.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightCubeFrag.frag; sourceTree = "<group>"; };
 		84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
 		84DBB39025F0BAB90036CA56 /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		84DBB39325F0BADB0036CA56 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
@@ -150,6 +152,8 @@
 				84DBB39525F0C1260036CA56 /* vertexSource.vert */,
 				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
 				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
+				84AC31ED2606583B00498BC5 /* lightCubeVert.vert */,
+				84AC31EE2606585E00498BC5 /* lightCubeFrag.frag */,
 			);
 			path = LO01;
 			sourceTree = "<group>";

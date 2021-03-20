@@ -210,6 +210,7 @@ int main()
     
     // MARK: Init Shader
     Shader* myShader = new Shader("vertexSource.vert", "fragmentSource.frag");
+    Shader* lightCubeShader = new Shader("lightCubeVert.vert", "lightCubeFrag.frag");
     
     
     // MARK: Init and Load Models to VAO, VBO
@@ -224,12 +225,18 @@ int main()
     
     glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(6);
-//    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-//    glEnableVertexAttribArray(7);
-//    glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-//    glEnableVertexAttribArray(8);
     glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(9);
+    
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // note that we update the lamp's position attribute's stride to reflect the updated buffer data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
     
     // MARK: Init and Load Textures
     unsigned int texBufferA;
@@ -287,7 +294,6 @@ int main()
 //        ImGui::Text("counter = %d", counter);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
-
         
         // Input
         processInput(window);
@@ -296,9 +302,11 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        viewMat = camera.GetViewMatrix();
-
         ImGui::Render();
+        viewMat = camera.GetViewMatrix();
+        glm::vec3 lightPos(imLightPos.x, imLightPos.y, imLightPos.z);
+        glm::vec3 lightColor(imLightColor.x, imLightColor.y, imLightColor.z);
+
         for (int i = 0; i < 10; i++)
         {
             // Set model matrix
@@ -314,9 +322,6 @@ int main()
             glBindTexture(GL_TEXTURE_2D, texBufferA);
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, texBufferB);
-
-            glm::vec3 lightPos(imLightPos.x, imLightPos.y, imLightPos.z);
-            glm::vec3 lightColor(imLightColor.x, imLightColor.y, imLightColor.z);
             
             myShader->setVec3("viewPos", camera.Position);
             myShader->setMat4("modelMat", modelMat);
@@ -341,6 +346,18 @@ int main()
             // Draw call
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+        
+        // Set lighting cube
+        lightCubeShader->use();
+        lightCubeShader->setMat4("viewMat", viewMat);
+        lightCubeShader->setMat4("projMat", projMat);
+        modelMat = glm::mat4(1.0f);
+        modelMat = glm::translate(modelMat, lightPos);
+        modelMat = glm::scale(modelMat, glm::vec3(0.2f));
+        lightCubeShader->setMat4("modelMat", modelMat);
+        lightCubeShader->setVec3("lightColor", lightColor);
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         // Clean up, prepare for next render loop
