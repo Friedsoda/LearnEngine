@@ -244,11 +244,14 @@ int main()
     glm::mat4 projMat(1.0f);
     projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     
-    // MARK: Setup lighting
-    ImVec4 lightColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    ImVec4 lightPos = ImVec4(10.0f, 10.0f, 5.0f, 1.00f);
-    float specularStrength = 1.0f;
-    float ambientStrength = 0.5f;
+    // MARK: Setup lighting & material
+    ImVec4 imLightColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    ImVec4 imLightPos = ImVec4(10.0f, 10.0f, 5.0f, 1.00f);
+    ImVec4 imLightSpe = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    ImVec4 ambient = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    ImVec4 diffuse = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    ImVec4 specular = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
+    float shininess = 32.0f;
     
     // MARK: Setup ImGui context
     IMGUI_CHECKVERSION();
@@ -267,19 +270,21 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         
-//        int counter = 0;
         ImGui::Begin("My engine!");
-        ImGui::InputFloat3("light position", (float*)&lightPos);
-        ImGui::ColorEdit3("light color", (float*)&lightColor);
-        ImGui::SliderFloat("ambient", &ambientStrength, 0.1f, 2.0f);
-        ImGui::SliderFloat("specular", &specularStrength, 1.0f, 10.0f);
-
+        ImGui::Text("Light setting:");
+        ImGui::InputFloat3("position", (float*)&imLightPos);
+        ImGui::ColorEdit3("color", (float*)&imLightColor);
+        ImGui::InputFloat3("light specular", (float*)&imLightSpe);
+        ImGui::Text("Material setting:");
+        ImGui::ColorEdit3("ambient", (float*)&ambient);
+        ImGui::InputFloat3("diffuse", (float*)&diffuse);
+        ImGui::InputFloat3("specular", (float*)&specular);
+        ImGui::SliderFloat("shininess", &shininess, 1.0f, 128.0f);
 
 //        if (ImGui::Button("Apply"))
 //            counter++;
 //        ImGui::SameLine();
 //        ImGui::Text("counter = %d", counter);
-
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
 
@@ -309,18 +314,26 @@ int main()
             glBindTexture(GL_TEXTURE_2D, texBufferA);
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, texBufferB);
-            // Set material -> uniform
-//            glUniform1i(glGetUniformLocation(myShader->ID, "ourTexture"), 0);
-//            glUniform1i(glGetUniformLocation(myShader->ID, "ourFace"), 3);
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "modelMat"), 1, GL_FALSE, glm::value_ptr(modelMat));
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "viewMat"), 1, GL_FALSE, glm::value_ptr(viewMat));
-            glUniformMatrix4fv(glGetUniformLocation(myShader->ID, "projMat"), 1, GL_FALSE, glm::value_ptr(projMat));
-            glUniform3f(glGetUniformLocation(myShader->ID, "objColor"), 1.0f, 0.5f, 0.31f);
-            glUniform1f(glGetUniformLocation(myShader->ID, "specularStrength"), specularStrength);
-            glUniform1f(glGetUniformLocation(myShader->ID, "ambientStrength"), ambientStrength);
-            glUniform3f(glGetUniformLocation(myShader->ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-            glUniform3f(glGetUniformLocation(myShader->ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z);
-            glUniform3f(glGetUniformLocation(myShader->ID, "cameraPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+
+            glm::vec3 lightPos(imLightPos.x, imLightPos.y, imLightPos.z);
+            glm::vec3 lightColor(imLightColor.x, imLightColor.y, imLightColor.z);
+            
+            myShader->setVec3("viewPos", camera.Position);
+            myShader->setMat4("modelMat", modelMat);
+            myShader->setMat4("viewMat", viewMat);
+            myShader->setMat4("projMat", projMat);
+            myShader->setVec3("light.position", lightPos);
+            
+            glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
+            glm::vec3 ambientColor = diffuseColor;
+            myShader->setVec3("light.ambient", ambientColor);
+            myShader->setVec3("light.diffuse", diffuseColor);
+            myShader->setVec3("light.specular", imLightSpe.x, imLightSpe.y, imLightSpe.z);
+            
+            myShader->setVec3("material.ambient", ambient.x, ambient.y, ambient.z);
+            myShader->setVec3("material.diffuse", diffuse.x, diffuse.y, diffuse.z);
+            myShader->setVec3("material.specular", specular.x, specular.y, specular.z); // specular lighting doesn't have full effect on this object's material
+            myShader->setFloat("material.shininess", shininess);
             
             // Set model
             glBindVertexArray(VAO);
