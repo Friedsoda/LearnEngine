@@ -21,6 +21,8 @@
 		8483B8E925E4CB11002B13DC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8483B8E825E4CB11002B13DC /* Cocoa.framework */; };
 		8483B8EB25E4CB19002B13DC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8483B8EA25E4CB19002B13DC /* IOKit.framework */; };
 		8483B8ED25E4CB21002B13DC /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8483B8EC25E4CB21002B13DC /* CoreVideo.framework */; };
+		8494CE4C26086686007C4FBF /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8494CE4A26086686007C4FBF /* Material.cpp */; };
+		8494CE512608734B007C4FBF /* MyGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8494CE4F2608734B007C4FBF /* MyGUI.cpp */; };
 		84DBB38A25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; };
 		84DBB38B25EBD98A0036CA56 /* libGLEW.2.2.0.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84DBB39025F0BAB90036CA56 /* Shader.cpp */; };
@@ -74,6 +76,11 @@
 		8483B8E825E4CB11002B13DC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8483B8EA25E4CB19002B13DC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		8483B8EC25E4CB21002B13DC /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		8494CE4A26086686007C4FBF /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
+		8494CE4B26086686007C4FBF /* Material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
+		8494CE4E26086CEB007C4FBF /* container2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2.png; sourceTree = "<group>"; };
+		8494CE4F2608734B007C4FBF /* MyGUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MyGUI.cpp; sourceTree = "<group>"; };
+		8494CE502608734B007C4FBF /* MyGUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyGUI.h; sourceTree = "<group>"; };
 		84AC31ED2606583B00498BC5 /* lightCubeVert.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightCubeVert.vert; sourceTree = "<group>"; };
 		84AC31EE2606585E00498BC5 /* lightCubeFrag.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = lightCubeFrag.frag; sourceTree = "<group>"; };
 		84DBB38925EBD98A0036CA56 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
@@ -126,6 +133,7 @@
 		8483B8D125E4C135002B13DC /* LO01 */ = {
 			isa = PBXGroup;
 			children = (
+				8494CE4D26086C8B007C4FBF /* resources */,
 				841564142604DDA400C71C30 /* imconfig.h */,
 				841564112604DDA400C71C30 /* imgui_demo.cpp */,
 				841564092604DDA400C71C30 /* imgui_draw.cpp */,
@@ -150,10 +158,12 @@
 				8483B8D225E4C135002B13DC /* main.cpp */,
 				84DBB39425F0C1180036CA56 /* fragmentSource.frag */,
 				84DBB39525F0C1260036CA56 /* vertexSource.vert */,
-				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
-				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
 				84AC31ED2606583B00498BC5 /* lightCubeVert.vert */,
 				84AC31EE2606585E00498BC5 /* lightCubeFrag.frag */,
+				8494CE4A26086686007C4FBF /* Material.cpp */,
+				8494CE4B26086686007C4FBF /* Material.h */,
+				8494CE4F2608734B007C4FBF /* MyGUI.cpp */,
+				8494CE502608734B007C4FBF /* MyGUI.h */,
 			);
 			path = LO01;
 			sourceTree = "<group>";
@@ -170,6 +180,16 @@
 				8483B8E325E4CAAF002B13DC /* OpenGL.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8494CE4D26086C8B007C4FBF /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				8494CE4E26086CEB007C4FBF /* container2.png */,
+				84DBB39B25F3AE590036CA56 /* awesomeface.jpg */,
+				84DBB39A25F3A0FB0036CA56 /* container.jpg */,
+			);
+			path = resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,12 +251,14 @@
 			files = (
 				8483B8D325E4C135002B13DC /* main.cpp in Sources */,
 				84E8BCED25F755E900C72624 /* Camera.cpp in Sources */,
+				8494CE512608734B007C4FBF /* MyGUI.cpp in Sources */,
 				84DBB39225F0BAB90036CA56 /* Shader.cpp in Sources */,
 				841564172604DDA400C71C30 /* imgui_impl_opengl3.cpp in Sources */,
 				8415641A2604DDA400C71C30 /* imgui_tables.cpp in Sources */,
 				8415641B2604DDA400C71C30 /* imgui_demo.cpp in Sources */,
 				841564162604DDA400C71C30 /* imgui_draw.cpp in Sources */,
 				841564152604DDA400C71C30 /* imgui_widgets.cpp in Sources */,
+				8494CE4C26086686007C4FBF /* Material.cpp in Sources */,
 				8483B8DC25E4C313002B13DC /* glad.c in Sources */,
 				841564182604DDA400C71C30 /* imgui_impl_glfw.cpp in Sources */,
 				841564192604DDA400C71C30 /* imgui.cpp in Sources */,

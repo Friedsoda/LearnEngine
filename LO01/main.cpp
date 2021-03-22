@@ -19,6 +19,7 @@
 
 #include "Shader.h"
 #include "Camera.h"
+#include "MyGUI.h"
 
 #include <iostream>
 
@@ -31,47 +32,48 @@ const unsigned int SCR_HEIGHT = 800;
 
 // MARK: Model Data
 float vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    // positions          // normals           // texture coords
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 
 glm::vec3 cubePositions[] = {
@@ -156,7 +158,7 @@ void mouse_callback(GLFWwindow* window, double xPos, double yPos)
 
 
 // MARK: Load Image
-unsigned int LoadImageToGPU(const char* fileName, GLint internalFormat, GLenum format, int textureSlot)
+unsigned int LoadImageToGPU(const char* fileName, int textureSlot)
 {
     unsigned int texBuffer;
     glGenTextures(1, &texBuffer);
@@ -168,7 +170,14 @@ unsigned int LoadImageToGPU(const char* fileName, GLint internalFormat, GLenum f
     unsigned char *data = stbi_load(fileName, &width, &height, &nrChannel, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        GLenum format;
+        if (nrChannel == 1)
+            format = GL_RED;
+        else if (nrChannel == 3)
+            format = GL_RGB;
+        else if (nrChannel == 4)
+            format = GL_RGBA;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -223,10 +232,12 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(6);
-    glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(9);
+    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(8, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(8);
     
     unsigned int lightCubeVAO;
     glGenVertexArrays(1, &lightCubeVAO);
@@ -234,15 +245,13 @@ int main()
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // note that we update the lamp's position attribute's stride to reflect the updated buffer data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
     
     // MARK: Init and Load Textures
     unsigned int texBufferA;
-    texBufferA = LoadImageToGPU("container.jpg", GL_RGB, GL_RGB, 0);
-    unsigned int texBufferB;
-    texBufferB = LoadImageToGPU("awesomeface.jpg", GL_RGBA, GL_RGBA, 3);
+    texBufferA = LoadImageToGPU("resources/container2.png", 0);
 
     
     // MARK: Prepare MVP Matrices
@@ -251,16 +260,9 @@ int main()
     glm::mat4 projMat(1.0f);
     projMat = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     
-    // MARK: Setup lighting & material
-    ImVec4 imLightColor = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    ImVec4 imLightPos = ImVec4(10.0f, 10.0f, 5.0f, 1.00f);
-    ImVec4 imLightSpe = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    ImVec4 ambient = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    ImVec4 diffuse = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    ImVec4 specular = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
-    float shininess = 32.0f;
     
     // MARK: Setup ImGui context
+    MyGUI* gui = new MyGUI();
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -276,24 +278,7 @@ int main()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        
-        ImGui::Begin("My engine!");
-        ImGui::Text("Light setting:");
-        ImGui::InputFloat3("position", (float*)&imLightPos);
-        ImGui::ColorEdit3("color", (float*)&imLightColor);
-        ImGui::InputFloat3("light specular", (float*)&imLightSpe);
-        ImGui::Text("Material setting:");
-        ImGui::ColorEdit3("ambient", (float*)&ambient);
-        ImGui::InputFloat3("diffuse", (float*)&diffuse);
-        ImGui::InputFloat3("specular", (float*)&specular);
-        ImGui::SliderFloat("shininess", &shininess, 1.0f, 128.0f);
-
-//        if (ImGui::Button("Apply"))
-//            counter++;
-//        ImGui::SameLine();
-//        ImGui::Text("counter = %d", counter);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+        gui->setup();
         
         // Input
         processInput(window);
@@ -304,8 +289,11 @@ int main()
         
         ImGui::Render();
         viewMat = camera.GetViewMatrix();
-        glm::vec3 lightPos(imLightPos.x, imLightPos.y, imLightPos.z);
-        glm::vec3 lightColor(imLightColor.x, imLightColor.y, imLightColor.z);
+        glm::vec3 lightPos = gui->getLightPos();
+        glm::vec3 lightColor = gui->getLightColor();
+        glm::vec3 lightAmbient = gui->getLightAmbient();
+        glm::vec3 lightDiffuse = gui->getLightDiffuse();
+        glm::vec3 lightSpecular = gui->getLightSpecular();
 
         for (int i = 0; i < 10; i++)
         {
@@ -320,8 +308,6 @@ int main()
             // Set material -> textures
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texBufferA);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, texBufferB);
             
             myShader->setVec3("viewPos", camera.Position);
             myShader->setMat4("modelMat", modelMat);
@@ -329,16 +315,14 @@ int main()
             myShader->setMat4("projMat", projMat);
             myShader->setVec3("light.position", lightPos);
             
-            glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
-            glm::vec3 ambientColor = diffuseColor;
-            myShader->setVec3("light.ambient", ambientColor);
-            myShader->setVec3("light.diffuse", diffuseColor);
-            myShader->setVec3("light.specular", imLightSpe.x, imLightSpe.y, imLightSpe.z);
+            myShader->setVec3("light.ambient", lightAmbient);
+            myShader->setVec3("light.diffuse", lightDiffuse);
+            myShader->setVec3("light.specular", lightSpecular);
             
-            myShader->setVec3("material.ambient", ambient.x, ambient.y, ambient.z);
-            myShader->setVec3("material.diffuse", diffuse.x, diffuse.y, diffuse.z);
-            myShader->setVec3("material.specular", specular.x, specular.y, specular.z); // specular lighting doesn't have full effect on this object's material
-            myShader->setFloat("material.shininess", shininess);
+            myShader->setVec3("material.ambient", gui->getMatAmbient());
+            myShader->setInt("material.diffuse", 0);
+            myShader->setVec3("material.specular", gui->getMatSpecular());
+            myShader->setFloat("material.shininess", gui->getMatShininess());
             
             // Set model
             glBindVertexArray(VAO);
